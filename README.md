@@ -3,7 +3,7 @@ Robotic assignment for environment identification
 
 
 
-Task 
+**Task** 
 
 Import lib to get images
 Import library to switch on lights
@@ -34,6 +34,7 @@ Give decision and switch on lights
 Turn on lights
 
 stop the robot
+
 -----------------
 
 
