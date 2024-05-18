@@ -23,7 +23,8 @@ setup(
     entry_points={
         'console_scripts': [
             'align_controller = thymiroomba.align_controller:main',
-            'explore_controller = thymiroomba.explore_controller:main'
+            'explore_controller = thymiroomba.explore_controller:main',
+            'image_controller = thymiroomba.image_controller:main'
         ],
     },
 )
