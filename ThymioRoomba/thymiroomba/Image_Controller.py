@@ -81,7 +81,8 @@ class ImageController(ControllerNode):
 
     def saveImage(self):
         filename="image_demo.jpg"
-        cv2.imwrite(filename, self.image)
+        if self.image is not None:
+            cv2.imwrite(filename, self.image)
     
     
     def update_callback(self):
