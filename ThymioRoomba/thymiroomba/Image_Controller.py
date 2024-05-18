@@ -6,6 +6,7 @@ from thymiroomba.controller import ControllerNode
 from thymiroomba.pid import PID
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import Range
+from sensor_msgs.msg import CompressedImage
 
 from copy import deepcopy
 from enum import Enum
@@ -23,7 +24,7 @@ class ThymioState(Enum):
     ROTATING = 3
 
 
-class ExploreController(ControllerNode):
+class ImageController(ControllerNode):
     # Period of the update timer, set based on update frequencies of proximity sensors (10Hz) and odom (20Hz)
     UPDATE_STEP = 1/20
 
@@ -45,6 +46,7 @@ class ExploreController(ControllerNode):
         # Initialize the state machine
         self.current_state = None
         self.next_state = ThymioState.FORWARD
+        self.image = None
 
         # Subscribe to all proximity sensors at the same time
         self.front_sensors = ["center_left", "center", "center_right"]
@@ -56,6 +58,13 @@ class ExploreController(ControllerNode):
             self.create_subscription(Range, f'proximity/{sensor}', self.create_proximity_callback(sensor), 10)
             for sensor in self.proximity_sensors
         ]
+
+        self.Image_subscriber = self.create_subscription(CompressedImage, 'imager', self.Imager_reader, 1)
+
+    def Imager_reader(self,im):
+        pixels = np.fromstring(im.data, dtype=np.dtype(np.uint8))
+        image = cv2.imdecode(pixels, cv2.IMREAD_COLOR)
+        self.image = image
     
     def create_proximity_callback(self, sensor):
         # Create a callback function that has access to both the message and the name of the sensor that sent it
@@ -68,6 +77,11 @@ class ExploreController(ControllerNode):
             )
             
         return proximity_callback            
+
+    def saveImage(self):
+        filename="image_demo.jpg"
+        cv2.imwrite(filename, self.image)
+    
     
     def update_callback(self):
         # Wait until the first update is received from odometry and each proximity sensor
@@ -89,7 +103,7 @@ class ExploreController(ControllerNode):
                 self.init_rotating()
             
             self.current_state = self.next_state
-        
+        self.saveImage()
         # Call update code for the current state
         if self.current_state == ThymioState.FORWARD:
             self.update_forward()
@@ -151,7 +165,7 @@ def main():
     rclpy.init(args=sys.argv)
     
     # Create an instance of your node class
-    node = ExploreController()
+    node = ImageController()
     node.start()
     
     # Keep processings events until someone manually shuts down the node
