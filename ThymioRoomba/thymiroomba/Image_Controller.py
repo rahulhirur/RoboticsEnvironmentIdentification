@@ -13,6 +13,7 @@ from enum import Enum
 from math import sin, cos, inf
 import random
 import sys
+import cv2
 
 
 class ThymioState(Enum):
