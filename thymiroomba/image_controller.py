@@ -43,7 +43,7 @@ class ImageController(ControllerNode):
     TARGET_ERROR = 0.001
     
     def __init__(self):
-        super().__init__('explore_controller', update_step=self.UPDATE_STEP)
+        super().__init__('image_controller', update_step=self.UPDATE_STEP)
 
         # Initialize the state machine
         self.current_state = None
