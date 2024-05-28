@@ -14,6 +14,7 @@ from math import sin, cos, inf
 import random
 import sys
 import cv2
+import torch
 
 
 class ThymioState(Enum):
@@ -48,6 +49,7 @@ class ImageController(ControllerNode):
         self.current_state = None
         self.next_state = ThymioState.FORWARD
         self.image = None
+        self.model = None
 
         # Subscribe to all proximity sensors at the same time
         self.front_sensors = ["center_left", "center", "center_right"]
@@ -83,6 +85,14 @@ class ImageController(ControllerNode):
         filename="image_demo.jpg"
         if self.image is not None:
             cv2.imwrite(filename, self.image)
+
+    def ModelLoader(self):
+        if self.model is None:
+            # Load the saved model
+            model = torch.load('CNNModel.h5')
+            model.eval()  # Set the model to evaluation mode
+            model.to(device)
+            
     
     
     def update_callback(self):
