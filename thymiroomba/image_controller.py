@@ -63,7 +63,7 @@ class ImageController(ControllerNode):
         self.Image_subscriber = self.create_subscription(CompressedImage, 'imager', self.Imager_reader, 1)
 
     def Imager_reader(self,im):
-        pixels = np.fromstring(im.data, dtype=np.dtype(np.uint8))
+        pixels = np.frombuffer(im.data, dtype=np.dtype(np.uint8))
         image = cv2.imdecode(pixels, cv2.IMREAD_COLOR)
         self.image = image
     
